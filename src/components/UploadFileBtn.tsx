@@ -40,7 +40,6 @@ export function UploadFileBtn() {
     };
 
     const onUpload = async () => {
-        const originalFileName = selectedFiles?.name
         const data = await selectedFiles?.arrayBuffer()
         const workbook = XLSX.read(data);
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -50,7 +49,6 @@ export function UploadFileBtn() {
         });
 
         // parse data
-        const otherDetails = jsonData.slice(0, 4)
         const studentDetails = jsonData.slice(4)
 
         let map: Map<string, StudentData[]> = new Map()
@@ -72,6 +70,7 @@ export function UploadFileBtn() {
                     map.set(division, [studentData])
                 }
             }
+            return;
         })
 
         const allDivisions = map.keys()
@@ -85,6 +84,7 @@ export function UploadFileBtn() {
                 const worksheet = XLSX.utils.json_to_sheet(studentDataForGivenDivision)
                 XLSX.utils.book_append_sheet(newWorkBook, worksheet, division);
             }
+            return
         })
         const currentDate = getCurrentDateTimeString();
         XLSX.writeFile(newWorkBook, `Internal_Marksheet_${currentDate}.xlsx`);
